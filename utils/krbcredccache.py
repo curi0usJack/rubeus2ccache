@@ -1,3 +1,5 @@
+# Yep.. more Dirkjan...
+# https://github.com/dirkjanm/krbrelayx/blob/master/lib/utils/krbcredccache.py
 from impacket.krb5.constants import TicketFlags
 from impacket.krb5.ccache import CCache, Header, Credential, KeyBlock, Times, CountedOctetString, Principal, Ticket
 from impacket.krb5 import types
