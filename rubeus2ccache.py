@@ -39,6 +39,7 @@ if os.path.exists(args.inputfile) == False:
 
 rawinput = open(args.inputfile)
 tickets = []
+savedtickets = 0
 newticket = False
 inticket = False
 line = True 
@@ -83,12 +84,16 @@ for t in tickets:
     endtimefileformat = datetime.datetime.utcfromtimestamp(endtimeutc).strftime('%m-%d-%Y-%H-%M-%S')
     endtimelogformat = datetime.datetime.utcfromtimestamp(endtimeutc).strftime('%m-%d-%Y %H:%M:%S')
     renewlogformat = datetime.datetime.utcfromtimestamp(renewutc).strftime('%m-%d-%Y %H:%M:%S')
-    message = "Parsed ticket. ClientName: {0} Realm: {1} EndTime: {2}. RenewTill: {3}".format(clientname, realm, endtimelogformat, renewlogformat)
     rando = ''.join(random.choices(string.ascii_letters, k=5))
     ccachename = clientname + "-" + endtimefileformat + "-" + realm + "_" + rando + ".ccache"
-    msg.ok(message)
-    ccache.saveFile("./output/" + ccachename)
 
-msg.success("Done. " + str(len(tickets)) + " ccache files saved to ./output")
+    if datetime.datetime.utcfromtimestamp(endtimeutc) > datetime.datetime.utcnow():
+        message = "Parsed ticket. ClientName: {0} Realm: {1} EndTime: {2}. RenewTill: {3}".format(clientname, realm, endtimelogformat, renewlogformat)
+        msg.ok(message)
+        ccache.saveFile("./output/" + ccachename)
+        savedtickets = savedtickets + 1
+    else: 
+        message = "Expired ticket. ClientName: {0} Realm: {1} EndTime: {2}. RenewTill: {3}".format(clientname, realm, endtimelogformat, renewlogformat)
+        msg.error(message)
 
-
+msg.success("Processed " + str(len(tickets)) + " Tickets. " + str(savedtickets) + " ccache files saved to ./output")
